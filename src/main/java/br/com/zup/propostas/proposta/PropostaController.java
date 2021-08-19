@@ -25,7 +25,7 @@ public class PropostaController {
     @Transactional
     @PostMapping("/proposta")
     public ResponseEntity<?> cadastroProposta(@Valid @RequestBody PropostaRequest propostaRequest){
-        Proposta proposta = propostaRequest.toProposta();
+        Proposta proposta = propostaRequest.toProposta(entityManager);
         entityManager.persist(proposta);
         URI uri = UriComponentsBuilder.fromUriString("/api/proposta/{id}").buildAndExpand((proposta.getId())).toUri();
         return ResponseEntity.created(uri).build();

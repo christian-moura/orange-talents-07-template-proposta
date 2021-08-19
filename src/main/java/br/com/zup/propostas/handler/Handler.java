@@ -1,6 +1,7 @@
 package br.com.zup.propostas.handler;
 
 import br.com.zup.propostas.handler.exception.ErrorFieldsException;
+import br.com.zup.propostas.handler.exception.PersonalizadaException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,12 @@ public class Handler {
     @ExceptionHandler(ErrorFieldsException.class)
     public ResponseEntity<ErrorFieldsBody> PersonalizadaFields(ErrorFieldsException e){
         ErrorFieldsBody error = new ErrorFieldsBody(e.getCampo(), e.getMessage());
+        return ResponseEntity.status(e.getStatus()).body(error);
+    }
+
+    @ExceptionHandler(PersonalizadaException.class)
+    public ResponseEntity<ErrorSingleMessageBody> PersonalizadaSingleMessage(PersonalizadaException e){
+        ErrorSingleMessageBody error = new ErrorSingleMessageBody(e.getMessage());
         return ResponseEntity.status(e.getStatus()).body(error);
     }
 }
