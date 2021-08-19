@@ -14,7 +14,6 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api")
-
 public class PropostaController {
 
     private EntityManager entityManager;
