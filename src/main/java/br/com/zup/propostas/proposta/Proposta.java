@@ -1,5 +1,8 @@
 package br.com.zup.propostas.proposta;
 
+import br.com.zup.propostas.proposta.analise.AnaliseResponse;
+import br.com.zup.propostas.proposta.analise.AnaliseStatus;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import java.math.BigDecimal;
@@ -18,8 +21,10 @@ public class Proposta {
    private String nome;
    @Column(nullable = false)
    private String endereco;
-   @Column(nullable = false) @Min(1)
+   @Column(nullable = false) @Min(0)
    private BigDecimal salario;
+
+   private PropostaEstado estado;
 
    @Deprecated
    public Proposta() {
@@ -35,5 +40,22 @@ public class Proposta {
 
    public Long getId() {
       return id;
+   }
+
+   public String getDocumento() {
+      return documento;
+   }
+
+   public String getNome() {
+      return nome;
+   }
+
+   public void adicionaEstado(AnaliseResponse analiseResponse) {
+      if(analiseResponse.getResultadoSolicitacao().equals(AnaliseStatus.COM_RESTRICAO)){
+         this.estado = PropostaEstado.NAO_ELEGIVEL;
+      }
+      else{
+         this.estado = PropostaEstado.ELEGIVEL;
+      }
    }
 }
