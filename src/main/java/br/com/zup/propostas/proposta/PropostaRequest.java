@@ -2,7 +2,6 @@ package br.com.zup.propostas.proposta;
 
 import br.com.zup.propostas.handler.exception.PersonalizadaException;
 import br.com.zup.propostas.validations.CPForCNPJ;
-import br.com.zup.propostas.validations.UniqueValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 
