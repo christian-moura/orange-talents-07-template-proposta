@@ -1,5 +1,6 @@
 package br.com.zup.propostas.proposta;
 
+import br.com.zup.propostas.cartao.Cartao;
 import br.com.zup.propostas.proposta.analise.AnaliseResponse;
 import br.com.zup.propostas.proposta.analise.AnaliseStatus;
 
@@ -23,8 +24,11 @@ public class Proposta {
    private String endereco;
    @Column(nullable = false) @Min(0)
    private BigDecimal salario;
-
+   @Column
    private PropostaEstado estado;
+
+   @OneToOne(mappedBy = "proposta", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   private Cartao cartao;
 
    @Deprecated
    public Proposta() {
