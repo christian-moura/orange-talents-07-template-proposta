@@ -11,7 +11,6 @@ import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -23,17 +22,15 @@ import java.util.List;
 public class CartaoJobs {
 
     Logger log = LoggerFactory.getLogger(CartaoJobs.class);
-
     private final ExecutorTransacao executorTransacao;
     private final CartaoClient cartaoClient;
-
 
     public CartaoJobs(ExecutorTransacao executorTransacao, CartaoClient cartaoClient) {
         this.executorTransacao = executorTransacao;
         this.cartaoClient = cartaoClient;
     }
 
-    @Scheduled(fixedRate = 60000)
+   // @Scheduled(fixedRate = 60000)
     private void associarCartaoJob(){
         log.info("Tarefa de vinculação de cartões");
         EntityManager entityManager = executorTransacao.getManager();
@@ -43,7 +40,7 @@ public class CartaoJobs {
         listaPropostas.forEach(proposta -> {
             try {
                 CartaoResponse cartaoResponse = cartaoClient
-                        .solicitarAnalise(
+                        .solicitarCartao(
                                 new CartaoRequest(proposta.getId().toString(), proposta.getDocumento(), proposta.getNome()));
                 Cartao cartao = cartaoResponse.toCartao(proposta);
                 executorTransacao.salvar(cartao);

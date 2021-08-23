@@ -54,6 +54,10 @@ public class Proposta {
       return nome;
    }
 
+   public PropostaEstado getEstado() {
+      return estado;
+   }
+
    public void adicionaEstado(AnaliseResponse analiseResponse) {
       if(analiseResponse.getResultadoSolicitacao().equals(AnaliseStatus.COM_RESTRICAO)){
          this.estado = PropostaEstado.NAO_ELEGIVEL;
