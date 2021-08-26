@@ -31,7 +31,7 @@ services:
     # networks: 
     #   - dev-proposta
     ports:
-      - 8585:8585
+      - 8080:8585
     volumes:
       - propostas-volume:/var/lib/app
     environment:
