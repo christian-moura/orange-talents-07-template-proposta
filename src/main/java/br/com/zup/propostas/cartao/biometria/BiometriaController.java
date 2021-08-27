@@ -1,4 +1,4 @@
-package br.com.zup.propostas.biometria;
+package br.com.zup.propostas.cartao.biometria;
 
 import br.com.zup.propostas.cartao.Cartao;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/cartao")
 public class BiometriaController {
 
     private EntityManager entityManager;
@@ -22,8 +22,8 @@ public class BiometriaController {
     }
 
     @Transactional
-    @PostMapping("/biometria/{id}")
-        public ResponseEntity<?> cadastrarBiometria(@PathVariable("id") String id, @Valid @RequestBody BiometriaRequest biometriaRequest){
+    @PostMapping("/{id}/biometria")
+    public ResponseEntity<?> cadastrarBiometria(@PathVariable("id") String id, @Valid @RequestBody BiometriaRequest biometriaRequest){
         Query query = entityManager.createQuery("select c from Cartao c where c.idCartao = :value");
         query.setParameter("value", id);
         if(query.getResultList().isEmpty()) return ResponseEntity.notFound().build();

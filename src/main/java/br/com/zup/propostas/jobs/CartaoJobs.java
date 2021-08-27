@@ -11,6 +11,7 @@ import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -30,7 +31,7 @@ public class CartaoJobs {
         this.cartaoClient = cartaoClient;
     }
 
-   // @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 5000)
     private void associarCartaoJob(){
         log.info("Tarefa de vinculação de cartões");
         EntityManager entityManager = executorTransacao.getManager();

@@ -1,6 +1,7 @@
 package br.com.zup.propostas.cartao;
 
-import br.com.zup.propostas.biometria.Biometria;
+import br.com.zup.propostas.cartao.biometria.Biometria;
+import br.com.zup.propostas.cartao.bloqueio.Bloqueio;
 import br.com.zup.propostas.cartao.vencimento.Vencimento;
 import br.com.zup.propostas.proposta.Proposta;
 
@@ -32,6 +33,9 @@ public class Cartao {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "cartao")
     private List<Biometria> biometrias;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "cartao")
+    private Bloqueio bloqueio;
+
     @Deprecated
     public Cartao() {
     }
@@ -43,5 +47,9 @@ public class Cartao {
         this.limite = limite;
         this.vencimento = vencimento;
         this.proposta = proposta;
+    }
+
+    public Bloqueio getBloqueio() {
+        return bloqueio;
     }
 }
