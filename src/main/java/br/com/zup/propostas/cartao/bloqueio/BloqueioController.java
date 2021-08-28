@@ -32,7 +32,8 @@ public class BloqueioController {
         if(IP==null) return ResponseEntity.badRequest().body(new ErrorSingleMessageBody("Ip inexistente no header da requisição."));
         if(userAgent==null) return ResponseEntity.badRequest().body(new ErrorSingleMessageBody("User Agent inexistente no header da requisição."));
         Bloqueio bloqueio = new Bloqueio(IP,userAgent,cartao);
-        entityManager.persist(bloqueio);
+        cartao.bloquear(bloqueio);
+        entityManager.merge(cartao);
         return ResponseEntity.ok().build();
     }
 }

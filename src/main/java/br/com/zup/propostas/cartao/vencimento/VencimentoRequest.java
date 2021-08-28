@@ -13,9 +13,7 @@ public class VencimentoRequest {
     @JsonProperty
     private LocalDate dataDeCriacao;
 
-
     public Vencimento toVencimento(){
         return new Vencimento(this.id,this.dia,this.dataDeCriacao );
     }
-
 }
