@@ -1,7 +1,10 @@
 package br.com.zup.propostas.cartao.aviso;
 
 import br.com.zup.propostas.cartao.Cartao;
+import br.com.zup.propostas.feignclient.CartaoClient;
 import br.com.zup.propostas.handler.ErrorSingleMessageBody;
+import feign.FeignException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,9 +18,11 @@ import javax.validation.Valid;
 public class AvisoViagemController {
 
     private EntityManager entityManager;
+    private CartaoClient cartaoClient;
 
-    public AvisoViagemController(EntityManager entityManager) {
+    public AvisoViagemController(EntityManager entityManager, CartaoClient cartaoClient) {
         this.entityManager = entityManager;
+        this.cartaoClient = cartaoClient;
     }
 
     @Transactional
@@ -33,7 +38,14 @@ public class AvisoViagemController {
         if(IP==null) return ResponseEntity.badRequest().body(new ErrorSingleMessageBody("Ip inexistente no header da requisição."));
         if(userAgent==null) return ResponseEntity.badRequest().body(new ErrorSingleMessageBody("User Agent inexistente no header da requisição."));
         AvisoViagem avisoViagem =  avisoViagemRequest.toAvisoViagem(IP,userAgent,cartao);
-        entityManager.persist(avisoViagem);
-        return ResponseEntity.ok().build();
+        try{
+            String destino = avisoViagem.getDestino().toString();
+            cartaoClient.avisarViagem(id,new AvisoSistemaLegadoRequest(destino, avisoViagem.getTerminaEm().toString()));
+            entityManager.persist(avisoViagem);
+            return ResponseEntity.ok().build();
+        }
+        catch(FeignException e){
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ErrorSingleMessageBody("Não foi possível processar a requisição no momento, tente mais tarde."));
+        }
     }
 }

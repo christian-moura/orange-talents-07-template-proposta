@@ -25,4 +25,9 @@ public class DestinoViagem {
         this.estado = estado;
         this.pais = pais;
     }
+
+    @Override
+    public String toString() {
+        return cidade +" "+estado+" "+pais;
+    }
 }

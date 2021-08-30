@@ -46,4 +46,12 @@ public class AvisoViagem {
     public Long getId() {
         return id;
     }
+
+    public LocalDate getTerminaEm() {
+        return terminaEm;
+    }
+
+    public DestinoViagem getDestino() {
+        return destino;
+    }
 }
