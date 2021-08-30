@@ -1,4 +1,4 @@
-package br.com.zup.propostas.health;
+package br.com.zup.propostas.config.health;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health;

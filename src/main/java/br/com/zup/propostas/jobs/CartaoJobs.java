@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -37,7 +36,7 @@ public class CartaoJobs {
         this.cartaoClient = cartaoClient;
     }
 
-    @Scheduled(fixedRate = 5000)
+    //@Scheduled(fixedRate = 5000)
     private void associarCartaoJob(){
         log.info("Tarefa de vinculação de cartões");
         EntityManager entityManager = executorTransacao.getManager();
@@ -58,7 +57,7 @@ public class CartaoJobs {
         });
     }
 
-    @Scheduled(fixedRate = 5000)
+   // @Scheduled(fixedRate = 5000)
     private void bloquearCartaoJob(){
         log.info("Tarefa de notificar o sistema legado sobre bloqueios de cartão");
         EntityManager entityManager = executorTransacao.getManager();
@@ -67,14 +66,11 @@ public class CartaoJobs {
         List<Cartao> listaCartao = query.getResultList();
         listaCartao.forEach(cartao -> {
             try {
-                BloqueioRequest bloqueioRequest = new BloqueioRequest("propostas");
-
-                BloqueioResponse bloqueioResponse = cartaoClient
-                        .bloquearCartao(cartao.getIdCartao(), bloqueioRequest );
-                System.out.println("CHEGA AQUI");
-
+               BloqueioResponse bloqueioResponse = cartaoClient
+                        .bloquearCartao(cartao.getIdCartao(), new BloqueioRequest("propostas"));
                 if(bloqueioResponse.getBloqueioStatus().equals(BloqueioStatus.BLOQUEADO)){
                     cartao.bloqueadoNoLegado();
+                    executorTransacao.salvar(cartao);
                     log.info("Sucesso ao bloquear cartão "+ cartao.getIdCartao()+" no sistema legado");
                 }
                 else if(bloqueioResponse.getBloqueioStatus().equals(BloqueioStatus.FALHA)){
