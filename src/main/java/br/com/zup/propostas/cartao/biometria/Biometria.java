@@ -20,7 +20,7 @@ public class Biometria {
     @Column(nullable = false)
     private LocalDateTime criadoEm ;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Cartao cartao;
 
     @Deprecated

@@ -1,5 +1,6 @@
 package br.com.zup.propostas.cartao;
 
+import br.com.zup.propostas.cartao.aviso.AvisoViagem;
 import br.com.zup.propostas.cartao.biometria.Biometria;
 import br.com.zup.propostas.cartao.bloqueio.Bloqueio;
 import br.com.zup.propostas.cartao.vencimento.Vencimento;
@@ -40,6 +41,9 @@ public class Cartao {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "cartao")
     private Bloqueio bloqueio;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cartao")
+    private List<AvisoViagem> avisoViagens;
 
     @Deprecated
     public Cartao() {
