@@ -36,7 +36,7 @@ public class CartaoJobs {
         this.cartaoClient = cartaoClient;
     }
 
-    //@Scheduled(fixedRate = 5000)
+//    @Scheduled(fixedRate = 5000)
     private void associarCartaoJob(){
         log.info("Tarefa de vinculação de cartões");
         EntityManager entityManager = executorTransacao.getManager();
@@ -57,7 +57,7 @@ public class CartaoJobs {
         });
     }
 
-   // @Scheduled(fixedRate = 5000)
+//    @Scheduled(fixedRate = 5000)
     private void bloquearCartaoJob(){
         log.info("Tarefa de notificar o sistema legado sobre bloqueios de cartão");
         EntityManager entityManager = executorTransacao.getManager();
@@ -70,7 +70,7 @@ public class CartaoJobs {
                         .bloquearCartao(cartao.getIdCartao(), new BloqueioRequest("propostas"));
                 if(bloqueioResponse.getBloqueioStatus().equals(BloqueioStatus.BLOQUEADO)){
                     cartao.bloqueadoNoLegado();
-                    executorTransacao.salvar(cartao);
+                    executorTransacao.atualizarECommitar(cartao);
                     log.info("Sucesso ao bloquear cartão "+ cartao.getIdCartao()+" no sistema legado");
                 }
                 else if(bloqueioResponse.getBloqueioStatus().equals(BloqueioStatus.FALHA)){

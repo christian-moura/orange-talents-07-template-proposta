@@ -3,6 +3,7 @@ package br.com.zup.propostas.cartao;
 import br.com.zup.propostas.cartao.aviso.AvisoViagem;
 import br.com.zup.propostas.cartao.biometria.Biometria;
 import br.com.zup.propostas.cartao.bloqueio.Bloqueio;
+import br.com.zup.propostas.cartao.carteira.CarteiraDigital;
 import br.com.zup.propostas.cartao.vencimento.Vencimento;
 import br.com.zup.propostas.proposta.Proposta;
 
@@ -44,6 +45,9 @@ public class Cartao {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cartao")
     private List<AvisoViagem> avisoViagens;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cartao")
+    private List<CarteiraDigital> carteirasDigitais;
 
     @Deprecated
     public Cartao() {

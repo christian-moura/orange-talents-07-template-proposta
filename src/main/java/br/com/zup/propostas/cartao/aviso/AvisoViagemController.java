@@ -27,7 +27,7 @@ public class AvisoViagemController {
 
     @Transactional
     @PostMapping("/{id}/aviso-viagem")
-    public ResponseEntity<?> bloquearCartao(@PathVariable("id") String id,
+    public ResponseEntity<?> avisoViagem(@PathVariable("id") String id,
                                             @RequestHeader(value = "Ip",required = false) String IP, // coloquei como não obrigatório para conseguir mandar a mensagem personalziada na validação abaixo.
                                             @RequestHeader(value = "User-Agent", required = false) String userAgent,
                                             @Valid @RequestBody AvisoViagemRequest avisoViagemRequest){
