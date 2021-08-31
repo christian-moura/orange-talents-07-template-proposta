@@ -79,4 +79,6 @@ public class Cartao {
     public void bloqueadoNoLegado(){
         this.estado = CartaoEstado.BLOQUEADO;
     }
+
+
 }

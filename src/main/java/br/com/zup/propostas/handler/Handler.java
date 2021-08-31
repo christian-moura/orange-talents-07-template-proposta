@@ -15,7 +15,7 @@ public class Handler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<ErrorFieldsBody>> MethodArgumentNotValid(MethodArgumentNotValidException e){
-        List<ErrorFieldsBody> erros = e.getFieldErrors().stream().map(ErrorFieldsBody::new).collect(Collectors.toList());
+        List<ErrorFieldsBody> erros = e.getBindingResult().getFieldErrors().stream().map(ErrorFieldsBody::new).collect(Collectors.toList());
         return ResponseEntity.badRequest().body(erros);
     }
 

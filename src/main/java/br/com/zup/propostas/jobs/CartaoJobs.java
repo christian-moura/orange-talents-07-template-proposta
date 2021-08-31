@@ -12,10 +12,12 @@ import br.com.zup.propostas.feignclient.CartaoClient;
 import br.com.zup.propostas.proposta.Proposta;
 import br.com.zup.propostas.proposta.PropostaEstado;
 import feign.FeignException;
+import io.opentracing.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -29,15 +31,17 @@ public class CartaoJobs {
     Logger log = LoggerFactory.getLogger(CartaoJobs.class);
     private final ExecutorTransacao executorTransacao;
     private final CartaoClient cartaoClient;
+    private final Tracer tracer;
 
     @Autowired
-    public CartaoJobs(ExecutorTransacao executorTransacao, CartaoClient cartaoClient) {
+    public CartaoJobs(ExecutorTransacao executorTransacao, CartaoClient cartaoClient, Tracer tracer) {
         this.executorTransacao = executorTransacao;
         this.cartaoClient = cartaoClient;
+        this.tracer = tracer;
     }
 
-//    @Scheduled(fixedRate = 5000)
-    private void associarCartaoJob(){
+    @Scheduled(fixedRate = 5000)
+    protected void associarCartaoJob(){
         log.info("Tarefa de vinculação de cartões");
         EntityManager entityManager = executorTransacao.getManager();
         Query query = entityManager.createQuery("select p from Proposta p where  p.estado =:estado and p.cartao is empty");
@@ -50,6 +54,8 @@ public class CartaoJobs {
                                 new CartaoRequest(proposta.getId().toString(), proposta.getDocumento(), proposta.getNome()));
                 Cartao cartao = cartaoResponse.toCartao(proposta);
                 executorTransacao.salvar(cartao);
+                tracer.activeSpan().setTag("operation.cartao.status", "success");
+                tracer.activeSpan().setBaggageItem("cartao.id", cartao.getIdCartao());
                 log.info("Sucesso ao vincular cartão para proposta: " + proposta.getId());
             } catch (FeignException ex) {
                 log.error("Falha ao vincular cartão para proposta: " + proposta.getId());
@@ -58,7 +64,7 @@ public class CartaoJobs {
     }
 
 //    @Scheduled(fixedRate = 5000)
-    private void bloquearCartaoJob(){
+    protected void bloquearCartaoJob(){
         log.info("Tarefa de notificar o sistema legado sobre bloqueios de cartão");
         EntityManager entityManager = executorTransacao.getManager();
         Query query = entityManager.createQuery("select c from Cartao c where  c.estado =:estado");
@@ -71,6 +77,8 @@ public class CartaoJobs {
                 if(bloqueioResponse.getBloqueioStatus().equals(BloqueioStatus.BLOQUEADO)){
                     cartao.bloqueadoNoLegado();
                     executorTransacao.atualizarECommitar(cartao);
+                    tracer.activeSpan().setTag("operation.bloquear.cartao.status", "success");
+                    tracer.activeSpan().setBaggageItem("cartao.id", cartao.getIdCartao());
                     log.info("Sucesso ao bloquear cartão "+ cartao.getIdCartao()+" no sistema legado");
                 }
                 else if(bloqueioResponse.getBloqueioStatus().equals(BloqueioStatus.FALHA)){

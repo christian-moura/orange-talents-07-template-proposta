@@ -4,6 +4,7 @@ import br.com.zup.propostas.cartao.Cartao;
 import br.com.zup.propostas.feignclient.CartaoClient;
 import br.com.zup.propostas.handler.ErrorSingleMessageBody;
 import feign.FeignException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class AvisoViagemController {
     private EntityManager entityManager;
     private CartaoClient cartaoClient;
 
+    @Autowired
     public AvisoViagemController(EntityManager entityManager, CartaoClient cartaoClient) {
         this.entityManager = entityManager;
         this.cartaoClient = cartaoClient;
