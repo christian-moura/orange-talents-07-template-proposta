@@ -6,4 +6,4 @@ USER spring:spring
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} propostas.jar
 ENTRYPOINT ["java","-jar","/propostas.jar"] 
-EXPOSE 8585
+EXPOSE 8080
