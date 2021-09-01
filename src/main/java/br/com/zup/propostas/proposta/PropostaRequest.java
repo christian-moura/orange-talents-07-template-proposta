@@ -1,5 +1,6 @@
 package br.com.zup.propostas.proposta;
 
+import br.com.zup.propostas.compartilhado.Cryptografia;
 import br.com.zup.propostas.handler.exception.PersonalizadaException;
 import br.com.zup.propostas.validations.CPForCNPJ;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,12 +28,12 @@ public class PropostaRequest {
     @JsonProperty @NotNull @Min(0)
     private BigDecimal salario;
 
-    public Proposta toProposta(EntityManager entityManager){
+    public Proposta toProposta(EntityManager entityManager, Cryptografia criptografia){
         Query query = entityManager.createQuery("select p from Proposta p where p.documento = :value");
-        query.setParameter("value", this.documento);
+        query.setParameter("value", criptografia.cryptografar(this.documento));
         if(!query.getResultList().isEmpty())
             throw new PersonalizadaException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "Não foi possível finalizar a requisição. Já existe uma proposta para o documento CPF/CNPJ informado");
-        return new Proposta(this.documento, this.email, this.nome, this.endereco,this.salario);
+        return new Proposta(criptografia.cryptografar(this.documento), this.email, this.nome, this.endereco,this.salario);
     }
 }
